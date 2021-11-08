@@ -5,30 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Blog extends Model
+class Comment extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'user_id',
-        'title',
-        'image',
-        'content'
+        'blog_id',
+        'body',
     ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function comments()
+    public function likes()
     {
-        return $this->hasMany(Comment::class)->orderByDesc('created_at');
+        return $this->hasMany(CommentLikes::class)->where('type',1);
     }
 
-    
-
-    public function getImageAttribute($image)
+    public function dislikes()
     {
-        return 'http://127.0.0.1:8000/storage/images/' . $image;
+        return $this->hasMany(CommentLikes::class)->where('type',0);
     }
+
+   
 }

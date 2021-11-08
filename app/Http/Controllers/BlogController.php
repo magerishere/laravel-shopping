@@ -36,7 +36,12 @@ class BlogController extends Controller
 
     public function show($id)
     {
-        return $this->blogRepository->find('blog',$id,['user']);
+        return $this->blogRepository->find('blog',$id,[
+            'user',
+            'comments.user',
+            'comments.likes',
+            'comments.dislikes'
+        ]);
     }
 
     public function edit($id) 

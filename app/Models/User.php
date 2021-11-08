@@ -42,6 +42,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function comments()
+    {
+        return $this->belongsToMany(Comment::class,'comment_likes')->as('likes')->withPivot('type');
+    }
+
+
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = bcrypt($password);

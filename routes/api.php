@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UserController;
 use App\Repositories\Blog\BlogRepositoryInterface;
 use Illuminate\Http\Request;
@@ -49,8 +50,21 @@ Route::get('/user/blogs', [UserController::class , 'blogs'])->middleware('auth:a
 |--------------------------------------------------------------------------
 */
 Route::get('/blogs',[BlogController::class , 'index']);
-Route::get('/blogs/user',[BlogController::class, 'userBlogs'])->middleware('auth:api');
-Route::post('/blog', [BlogController::class , 'store'])->middleware('auth:api');
 Route::get('/blog/{id}',[BlogController::class , 'show']);
-Route::get('/blog/user/{id}/edit', [BlogController::class , 'edit'])->middleware('auth:api');
-Route::patch('/blog/{id}', [BlogController::class,'update'])->middleware('auth:api');
+Route::middleware('auth:api')->group(function() {
+    Route::get('/blogs/user',[BlogController::class, 'userBlogs']);
+    Route::post('/blog', [BlogController::class , 'store']);
+    Route::get('/blog/user/{id}/edit', [BlogController::class , 'edit']);
+    Route::patch('/blog/{id}', [BlogController::class,'update']);
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| Comment Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth:api')->group(function() {
+    Route::post('/comment', [CommentController::class , 'store']);
+    Route::post('/comment/{id}/like', [CommentController::class ,'like']);
+});

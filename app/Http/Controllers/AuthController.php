@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Repositories\Auth\AuthRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -15,12 +16,12 @@ class AuthController extends Controller
         $this->authRepository = $authRepository;
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
        return $this->authRepository->login($request);
     }
 
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
         return $this->authRepository->register($request);
     }

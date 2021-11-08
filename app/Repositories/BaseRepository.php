@@ -20,19 +20,21 @@ class BaseRepository implements BaseRepositoryInterface {
             // just get all data for user
             if($isOwn) {
                 return $this->successResponse([
-                    $keyData => $this->model::with($relations)->where(config('global.isOwnKey'),Auth::id())->get()
+                    $keyData => $this->model::with($relations)->where(config('global.isOwnKey'),Auth::id())->orderByDesc('created_at')->get()
                 ]);
             }
-            return $this->successResponse([$keyData => $this->model::with($relations)->get()]);
+            return $this->successResponse([$keyData => $this->model::with($relations)->orderByDesc('created_at')->get()]);
         } catch (Exception $e) {
             return $this->errorsHandler($e);
         }
     }
 
-    public function create(array $data,string $uploadBasePath) : JsonResponse
+    public function create(array $data,string $uploadBasePath = null) : JsonResponse
     {
         try {
-            $data = $this->fileUploader($data,$uploadBasePath);
+            if(!is_null($uploadBasePath)) {
+                $data = $this->fileUploader($data,$uploadBasePath);
+            }
             $this->model::create($data);
             return $this->successResponse();
         } catch (Exception $e) {
@@ -40,12 +42,14 @@ class BaseRepository implements BaseRepositoryInterface {
         }
     }
 
-    public function update(array $data,$id,string $uploadBasePath) : JsonResponse
+    public function update(array $data,$id,string $uploadBasePath = null) : JsonResponse
     {
         try {
-            $this->model = $this->model::findOrFail($id);
 
-            $data = $this->fileUploader($data,$uploadBasePath);
+            $this->model = $this->model::findOrFail($id);
+            if(!is_null($uploadBasePath)) {
+                $data = $this->fileUploader($data,$uploadBasePath);
+            }
             $this->model->update($data);
             return $this->successResponse();
         } catch (Exception $e) {
@@ -60,7 +64,7 @@ class BaseRepository implements BaseRepositoryInterface {
             if(request()->hasFile($key)) {
                 // if want to update data
                 if(request()->isMethod('PATCH') || request()->isMethod('PUT')) {
-
+                    // remove old file before upload new file
                     $oldFilePath = $uploadBasePath . $this->model->getRawOriginal($key); 
                     if(file_exists($oldFilePath)) {
                         unlink($oldFilePath);

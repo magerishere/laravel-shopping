@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Blog;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BlogStoreRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,9 @@ class BlogStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:' . config('global.titleLength'),
-            'image' => 'required|image|max:' . config('global.imageLength'),
-            'content' => 'required|string|max:' . config('global.contentLength'),
+            'name' => 'required|string|max:' . config('global.userNameLength'),
+            'email' => 'required|string|email|max:' .  config('global.emailLength') . '|unique:users,email',
+            'password' => 'required|string|min:8',
         ];
     }
-
 }

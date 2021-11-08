@@ -16,10 +16,13 @@ class CreateBlogsTable extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('title');
-            $table->string('image')->unique();
+            $table->string('title',config('global.titleLength'));
+            $table->string('image',config('global.imageLength'))->unique();
             $table->text('content');
             $table->timestamps();
+            if(config('global.softDeletes')) {
+                $table->softDeletes();
+            }
         });
     }
 

@@ -1,7 +1,9 @@
 <?php
 
 use App\Models\Blog;
+use App\Models\Comment;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -17,18 +19,17 @@ use Illuminate\Support\Str;
 */
 
 Route::get('/', function () {
-    $user = User::class;
-    if($user->id) {
-        return 'true';
+    $user = User::find(1);
+  $comments = Comment::with('user','likes','dislikes')->get();
+    foreach($comments[0]->likes as $like) {
+        if($like->user_id === $user->id && $like->type) {
+            return 'liked';
+        }
+        if($like->user_id === $user->id && !$like->type) {
+            return 'disliked';
+        }
+        return 'none';
     }
-    return 'false';
-    return Str::random(40);
-    return public_path('storage') . '\\images';
-    if(file_exists(public_path('storage/images/DgVb7jhcHiJB5ICIsDfqJ5KpL2j7mFavq3EImKws.png'))) {
-
-        unlink(public_path('storage/images/DgVb7jhcHiJB5ICIsDfqJ5KpL2j7mFavq3EImKws.png'));
-    }
-    
-    return 'done';
-    return view('welcome');
+    // return $comments;
+    // return view('welcome');
 });

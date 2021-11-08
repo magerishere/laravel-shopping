@@ -22,8 +22,17 @@ class CommentController extends Controller
         return $this->commentRepository->create($request->all());
     }
 
-    public function like($id)
+    public function likesAndDislikes($id,$type)
     {
-        return $this->commentRepository->like($id);
+        if($type === 'like') {
+            $type = true;
+        }
+        if($type === 'dislike') {
+            $type = false;
+        }
+
+        return $this->commentRepository->likesAndDislikes($id,$type);
     }
+
+    
 }

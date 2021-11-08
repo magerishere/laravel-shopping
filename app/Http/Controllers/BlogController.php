@@ -51,9 +51,13 @@ class BlogController extends Controller
 
     public function update(BlogUpdateRequest $request,$id)
     {
-        
         return $this->blogRepository
                     ->update($request->all(),$id,config('global.imagesBasePath'));
+    }
+
+    public function likesAndDislikes()
+    {
+        
     }
 
 

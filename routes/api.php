@@ -56,7 +56,7 @@ Route::middleware('auth:api')->group(function() {
     Route::post('/blog', [BlogController::class , 'store']);
     Route::get('/blog/user/{id}/edit', [BlogController::class , 'edit']);
     Route::patch('/blog/{id}', [BlogController::class,'update']);
-
+    Route::post('/blog/{id}/{type}',[BlogController::class , 'likesAndDislikes']);
 });
 
 /*
@@ -66,5 +66,5 @@ Route::middleware('auth:api')->group(function() {
 */
 Route::middleware('auth:api')->group(function() {
     Route::post('/comment', [CommentController::class , 'store']);
-    Route::post('/comment/{id}/like', [CommentController::class ,'like']);
+    Route::post('/comment/{id}/{type}', [CommentController::class ,'likesAndDislikes']);
 });

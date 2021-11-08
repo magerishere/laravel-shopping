@@ -15,6 +15,11 @@ class Comment extends Model
         'body',
     ];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -29,6 +34,8 @@ class Comment extends Model
     {
         return $this->hasMany(CommentLikes::class)->where('type',0);
     }
+
+ 
 
    
 }

@@ -20,9 +20,7 @@ class CreateBlogsTable extends Migration
             $table->string('image',config('global.imageLength'))->unique();
             $table->text('content');
             $table->timestamps();
-            if(config('global.softDeletes')) {
-                $table->softDeletes();
-            }
+            $table->softDeletes();
         });
     }
 

@@ -11,9 +11,11 @@ class Blog extends Model
     
     protected $fillable = [
         'user_id',
+        'catName',
         'title',
         'image',
-        'content'
+        'content',
+        'views'
     ];
     public function user()
     {
@@ -25,7 +27,15 @@ class Blog extends Model
         return $this->hasMany(Comment::class)->orderByDesc('created_at');
     }
 
-    
+    public function likes()
+    {
+        return $this->hasMany(BlogLikes::class)->where('type',1);
+    }
+
+    public function dislikes()
+    {
+        return $this->hasMany(BlogLikes::class)->where('type',0);
+    }
 
     public function getImageAttribute($image)
     {

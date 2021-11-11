@@ -2,11 +2,12 @@
 
 use App\Models\Blog;
 use App\Models\Comment;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Models\LikeDislikes;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,17 +20,10 @@ use Illuminate\Support\Str;
 */
 
 Route::get('/', function () {
-    $user = User::find(1);
-  $comments = Comment::with('user','likes','dislikes')->get();
-    foreach($comments[0]->likes as $like) {
-        if($like->user_id === $user->id && $like->type) {
-            return 'liked';
-        }
-        if($like->user_id === $user->id && !$like->type) {
-            return 'disliked';
-        }
-        return 'none';
-    }
-    // return $comments;
-    // return view('welcome');
+    return App::environment();
+$blogs = Blog::orderByDesc('created_at')->get();
+    $blogs->load('comments');
+    
+   dump(DB::getQueryLog());
+   return $blogs;
 });

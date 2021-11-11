@@ -1,10 +1,11 @@
 <?php
 
+use App\Models\CommentReply;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBlogsTable extends Migration
+class CreateCommentReplyLikesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +14,12 @@ class CreateBlogsTable extends Migration
      */
     public function up()
     {
-        Schema::create('blogs', function (Blueprint $table) {
+        Schema::create('comment_reply_likes', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(CommentReply::class)->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('views');
-            $table->string('catName',config('global.catNameLength'));
-            $table->string('title',config('global.titleLength'));
-            $table->string('image',config('global.imageLength'))->unique();
-            $table->text('content');
+            $table->boolean('type');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -33,6 +30,6 @@ class CreateBlogsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('blogs');
+        Schema::dropIfExists('comment_reply_likes');
     }
 }

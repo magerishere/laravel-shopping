@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class CommentReply extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'blog_id',
-        'body',
+        'comment_id',
+        'body'
     ];
 
     protected function serializeDate(\DateTimeInterface $date)
@@ -27,18 +27,13 @@ class Comment extends Model
 
     public function likes()
     {
-        return $this->hasMany(CommentLikes::class)->where('type',1);
+        return $this->hasMany(CommentReplyLikes::class)->where('type',1);
     }
 
     public function dislikes()
     {
-        return $this->hasMany(CommentLikes::class)->where('type',0);
+        return $this->hasMany(CommentReplyLikes::class)->where('type',0);
     }
 
-    public function replies()
-    {
-        return $this->hasMany(CommentReply::class);
-    }
 
-   
 }

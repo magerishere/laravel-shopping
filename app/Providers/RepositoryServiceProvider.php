@@ -8,6 +8,8 @@ use App\Repositories\Blog\BlogRepository;
 use App\Repositories\Blog\BlogRepositoryInterface;
 use App\Repositories\Comment\CommentRepository;
 use App\Repositories\Comment\CommentRepositoryInterface;
+use App\Repositories\CommentReply\CommentReplyRepository;
+use App\Repositories\CommentReply\CommentReplyRepositoryInterface;
 use App\Repositories\User\UserRepository;
 use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
@@ -35,5 +37,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(BlogRepositoryInterface::class,BlogRepository::class);
         $this->app->bind(UserRepositoryInterface::class,UserRepository::class);
         $this->app->bind(CommentRepositoryInterface::class,CommentRepository::class);
+        $this->app->bind(CommentReplyRepositoryInterface::class,CommentReplyRepository::class);
     }
 }

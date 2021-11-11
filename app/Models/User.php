@@ -47,6 +47,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Comment::class,'comment_likes')->as('likes')->withPivot('type');
     }
 
+    public function blogs()
+    {
+        return $this->belongsToMany(Blog::class,'blog_likes')->as('like')->withPivot('type');
+    }
+
+    public function commentReplies()
+    {
+        return $this->belongsToMany(CommentReply::class, 'comment_reply_likes')->withPivot('type');
+    }
+
 
     public function setPasswordAttribute($password)
     {

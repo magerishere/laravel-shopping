@@ -19,7 +19,6 @@ class CreateCommentLikesTable extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->boolean('type')->comment('1 = like');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

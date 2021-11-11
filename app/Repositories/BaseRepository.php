@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
@@ -14,20 +15,41 @@ use Illuminate\Support\Str;
 class BaseRepository implements BaseRepositoryInterface {
     protected $model;
   
-    public function all(string $keyData,array $relations = [],bool $isOwn = false) : JsonResponse
+    public function all(string $keyData, array $relations = null, bool $onlyCount = false, bool $isOwn = false) : JsonResponse
     {
         try {
-            // just get all data for user
+            $model = $this->model::query();
+     
+            // Get all data that belongs only to the user
             if($isOwn) {
-                return $this->successResponse([
-                    $keyData => $this->model::with($relations)->where(config('global.isOwnKey'),Auth::id())->orderByDesc('created_at')->get()
-                ]);
+                $isOwnKey = config('global.isOwnKey');
+                $model->where($isOwnKey,Auth::id());
             }
-            return $this->successResponse([$keyData => $this->model::with($relations)->orderByDesc('created_at')->get()]);
+
+            
+            // Apply filters
+            if($criterias = request('filters')) {
+                foreach($criterias as $column => $criteria) {
+                    $model->where($column,$criteria);
+                }
+            }
+            
+            $orderByColumn = config('global.orderByColumn');
+            $orderBy = request('orderBy','desc');
+            $model->orderBy($orderByColumn,$orderBy);
+            $model = $model->get();
+            // load relations model
+            if($relations) {
+                $this->relationsLoader($model,$relations,$onlyCount);
+            }
+
+            return $this->successResponse([$keyData => $model]);
         } catch (Exception $e) {
             return $this->errorsHandler($e);
         }
     }
+
+   
 
     public function create(array $data,string $uploadBasePath = null) : JsonResponse
     {
@@ -80,23 +102,80 @@ class BaseRepository implements BaseRepositoryInterface {
     }
 
 
-    public function find(string $keyData,$id,array $relations = null,bool $isOwn = false) : JsonResponse
+    public function find(string $keyData,$id,array $relations = null,bool $onlyCount = false,bool $isOwn = false) : JsonResponse
     {
         try {
             $model = $this->model::findOrFail($id);
+            // increase views
+            $this->viewsCounter($model);
             // if isOwn set true,check if data blongs to user
-            $isOwnKey = config('global.isOwnKey');
-            if($isOwn && $model->$isOwnKey !== Auth::id()) {
-                throw new UnauthorizedException();
-                return null;
+            if($isOwn) {
+                $this->mustBelongsToUser($model);
             }
-
+            // load relations model
             if($relations) {
-                $model->load($relations);
+               $this->relationsLoader($model,$relations,$onlyCount);
             }
 
             return $this->successResponse([$keyData => $model]);
           
+        } catch (Exception $e) {
+            return $this->errorsHandler($e);
+        }
+    }
+
+    public function likesAndDislikesHandler($id,string $type) : JsonResponse
+    {
+        try {
+            if($type === 'like') {
+                $type = true;
+            }
+            if($type === 'dislike') {
+                $type = false;
+            }
+
+           $user = Auth::user();
+           // example: Comment -> CommentLikes
+           $modelLikes = $this->model . 'Likes';
+           // example: Comment -> comment
+           $lowerCaseModelName = Str::lower(class_basename($this->model));
+           // belongsToMany relations example: comment -> comments
+           $relationName = Str::plural($lowerCaseModelName);
+           // is own key in application is user_id
+           $isOwnKey = config('global.isOwnKey');
+           // foreign key model example: comment -> comment_id
+           $foreignKey = $lowerCaseModelName . '_id';
+
+            // if model have multi word example: CommentReply -> ['Comment','Reply']
+            $seprateWords = seprateWords(class_basename($this->model));
+            // if model have multi word
+            if(count($seprateWords) > 0) {
+                // lower case each item in array and put _ between
+                // example: ['Comment','Reply'] -> comment_reply
+                $lowerCaseSeprateWords = implode('_',array_map('strtolower',$seprateWords));
+               
+                $foreignKey = $lowerCaseSeprateWords . '_id';
+                // example: comment_reply -> commentReply
+                $lowerCaseRelationName = Str::camel($lowerCaseSeprateWords);
+                // example: commentReply -> commentReplies
+                $relationName = Str::plural($lowerCaseRelationName);
+            }
+
+           // check if user have like or dislike
+           $likeOrDislikeExists = $modelLikes::where([
+               $foreignKey => $id,
+                $isOwnKey => $user->id,
+                'type' => $type,
+           ])->first();
+           // if user have like or dislike
+           if($likeOrDislikeExists) {
+               // toggle like or dislike
+               $user->$relationName()->toggle([$id => ['type' => $type]]);
+           } else {
+               // add like or dislike
+               $user->$relationName()->syncWithoutDetaching([$id => ['type' => $type]]);
+            }
+           return $this->successResponse();
         } catch (Exception $e) {
             return $this->errorsHandler($e);
         }
@@ -138,6 +217,32 @@ class BaseRepository implements BaseRepositoryInterface {
         return response()->json($errors);
 
 
+    }
+
+    private function viewsCounter(Model $model)
+    {   
+        if(!is_null($model->views)) {
+            $model->update([
+                'views' => $model->views + 1
+            ]);
+        }
+    }
+
+    private function mustBelongsToUser(Model $model)
+    {
+        $isOwnKey = config('global.isOwnKey');
+        if($model->$isOwnKey !== Auth::id()) {
+            throw new UnauthorizedException();
+        }
+    }
+
+    private function relationsLoader($model,array $relations,bool $onlyCount = false)
+    {
+        if($onlyCount) {
+            $model->loadCount($relations);
+        } else {
+            $model->load($relations);
+        }
     }
 
 

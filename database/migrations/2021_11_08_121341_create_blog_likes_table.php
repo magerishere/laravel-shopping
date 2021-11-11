@@ -19,7 +19,6 @@ class CreateBlogLikesTable extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->boolean('type');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

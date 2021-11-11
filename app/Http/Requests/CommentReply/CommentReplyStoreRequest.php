@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Blog;
+namespace App\Http\Requests\CommentReply;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BlogUpdateRequest extends FormRequest
+class CommentReplyStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,7 @@ class BlogUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'catName' => 'required|string|max:' . config('global.catNameLength'),
-            'title' => 'required|string|max:' . config('global.titleLength'),
-            'image' => 'sometimes|image|max:' . config('global.imageLength'),
-            'content' => 'required|string|max:' . config('global.contentLength'),
+            'body' => 'required|string|max:' . config('global.commentReplyLength')
         ];
     }
 }

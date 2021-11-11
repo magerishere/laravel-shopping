@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Blog\BlogStoreRequest;
 use App\Http\Requests\Blog\BlogUpdateRequest;
+use App\Models\Blog;
 use App\Repositories\Blog\BlogRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class BlogController extends Controller
 {
     private $blogRepository;
-
+   
     public function __construct(BlogRepositoryInterface $blogRepository)
     {
         $this->blogRepository = $blogRepository;
@@ -19,18 +20,19 @@ class BlogController extends Controller
 
     public function index() 
     {
-        return $this->blogRepository->all('blogs');
+        return $this->blogRepository->all('blogs',['comments','likes'],true);
     }
 
     public function userBlogs() 
     {
-        return $this->blogRepository->all('userBlogs',[],true);
+        return $this->blogRepository->all('userBlogs',[],false,true);
     }
 
 
     public function store(BlogStoreRequest $request)
     {
         $request['user_id'] = Auth::id();
+        $request['views'] = config('global.viewsCount');
         return $this->blogRepository->create($request->all(),config('global.imagesBasePath'));
     }
 
@@ -38,15 +40,21 @@ class BlogController extends Controller
     {
         return $this->blogRepository->find('blog',$id,[
             'user',
+            'likes',
+            'dislikes',
             'comments.user',
             'comments.likes',
-            'comments.dislikes'
+            'comments.dislikes',
+            'comments.replies',
+            'comments.replies.user',
+            'comments.replies.likes',
+            'comments.replies.dislikes'
         ]);
     }
 
     public function edit($id) 
     {
-        return $this->blogRepository->find('blog',$id,[],true);
+        return $this->blogRepository->find('blog',$id,[],false,true);
     }
 
     public function update(BlogUpdateRequest $request,$id)
@@ -55,9 +63,9 @@ class BlogController extends Controller
                     ->update($request->all(),$id,config('global.imagesBasePath'));
     }
 
-    public function likesAndDislikes()
+    public function likesAndDislikes($id,string $type)
     {
-        
+        return $this->blogRepository->likesAndDislikesHandler($id,$type);
     }
 
 

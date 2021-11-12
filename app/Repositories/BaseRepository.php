@@ -28,21 +28,26 @@ class BaseRepository implements BaseRepositoryInterface {
 
             
             // Apply filters
-            if($criterias = request('filters')) {
-                foreach($criterias as $column => $criteria) {
-                    $model->where($column,$criteria);
+            $request = request();
+            if($request->isMethod('POST')) {
+                Log::alert($request->all());
+                foreach(json_decode($request->get('catNames',[])) as $catName) {
+                    $model->orWhere('catNameKey',$catName);
                 }
             }
-            
-            $orderByColumn = config('global.orderByColumn');
-            $orderBy = request('orderBy','desc');
+            $orderByColumn = $request->get('orderByColumn',config('global.orderByColumn'));
+            $orderBy = $request->get('orderBy','desc');
             $model->orderBy($orderByColumn,$orderBy);
             $model = $model->get();
             // load relations model
             if($relations) {
                 $this->relationsLoader($model,$relations,$onlyCount);
             }
-
+            $orderByRelation = $request->get('orderByRelation',null);
+            if(!is_null($orderByRelation)) {
+                $model = $model->sortByDesc($orderByRelation);
+                $model = $model->values()->all();
+            }
             return $this->successResponse([$keyData => $model]);
         } catch (Exception $e) {
             return $this->errorsHandler($e);

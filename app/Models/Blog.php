@@ -11,12 +11,18 @@ class Blog extends Model
     
     protected $fillable = [
         'user_id',
+        'catNameKey',
         'catName',
         'title',
         'image',
         'content',
         'views'
     ];
+    
+    protected $casts = [
+        'created_at' => 'date:Y-m-d'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

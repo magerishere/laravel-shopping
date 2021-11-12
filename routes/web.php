@@ -20,10 +20,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return App::environment();
-$blogs = Blog::orderByDesc('created_at')->get();
-    $blogs->load('comments');
-    
-   dump(DB::getQueryLog());
+    $blogs = Blog::withCount('likes')->get();
+    $blogs->sortBy('likes_count',SORT_DESC);
+
    return $blogs;
 });

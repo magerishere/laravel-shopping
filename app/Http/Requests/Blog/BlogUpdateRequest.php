@@ -24,6 +24,7 @@ class BlogUpdateRequest extends FormRequest
     public function rules()
     {
         return [
+            'catNameKey' => 'required|string|max:' . config('global.catNameLength'),
             'catName' => 'required|string|max:' . config('global.catNameLength'),
             'title' => 'required|string|max:' . config('global.titleLength'),
             'image' => 'sometimes|image|max:' . config('global.imageLength'),

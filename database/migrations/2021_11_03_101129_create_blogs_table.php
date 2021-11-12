@@ -17,7 +17,8 @@ class CreateBlogsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('views');
-            $table->string('catName',config('global.catNameLength'));
+            $table->string('catNameKey',config('global.catNameLength'))->comment('for query');
+            $table->string('catName',config('global.catNameLength'))->comment('for UI');
             $table->string('title',config('global.titleLength'));
             $table->string('image',config('global.imageLength'))->unique();
             $table->text('content');

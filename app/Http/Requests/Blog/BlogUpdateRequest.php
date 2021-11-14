@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Blog;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class BlogUpdateRequest extends FormRequest
 {
@@ -23,11 +24,12 @@ class BlogUpdateRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
             'catNameKey' => 'required|string|max:' . config('global.catNameLength'),
             'catName' => 'required|string|max:' . config('global.catNameLength'),
             'title' => 'required|string|max:' . config('global.titleLength'),
-            'image' => 'sometimes|image|max:' . config('global.imageLength'),
+            'image' => 'sometimes|required|image|max:' . config('global.imageSize'),
             'content' => 'required|string|max:' . config('global.contentLength'),
         ];
     }

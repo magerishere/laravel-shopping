@@ -16,7 +16,7 @@ class CreateBlogsTable extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('views');
+            $table->unsignedInteger('views');
             $table->string('catNameKey',config('global.catNameLength'))->comment('for query');
             $table->string('catName',config('global.catNameLength'))->comment('for UI');
             $table->string('title',config('global.titleLength'));

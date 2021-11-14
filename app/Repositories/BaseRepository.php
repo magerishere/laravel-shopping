@@ -19,35 +19,43 @@ class BaseRepository implements BaseRepositoryInterface {
     {
         try {
             $model = $this->model::query();
-     
+            // load relations model
+            if($relations) {
+              $this->relationsLoader($model,$relations,$onlyCount);
+            }
             // Get all data that belongs only to the user
             if($isOwn) {
                 $isOwnKey = config('global.isOwnKey');
                 $model->where($isOwnKey,Auth::id());
             }
 
-            
             // Apply filters
             $request = request();
-            if($request->isMethod('POST')) {
-                Log::alert($request->all());
-                foreach(json_decode($request->get('catNames',[])) as $catName) {
+            if($catNames = $request->get('catNames')) {
+                foreach(json_decode($catNames) as $catName) {
                     $model->orWhere('catNameKey',$catName);
                 }
             }
-            $orderByColumn = $request->get('orderByColumn',config('global.orderByColumn'));
-            $orderBy = $request->get('orderBy','desc');
-            $model->orderBy($orderByColumn,$orderBy);
-            $model = $model->get();
-            // load relations model
-            if($relations) {
-                $this->relationsLoader($model,$relations,$onlyCount);
-            }
+            // order by relation count
             $orderByRelation = $request->get('orderByRelation',null);
             if(!is_null($orderByRelation)) {
-                $model = $model->sortByDesc($orderByRelation);
-                $model = $model->values()->all();
+                $model->orderByDesc($orderByRelation);
+                
+            } else {
+
+                // order by column 
+                $orderByColumn = $request->get('orderByColumn',config('global.orderByColumn'));
+                $orderBy = $request->get('orderBy','desc');
+                Log::alert('this is attention');
+                Log::alert($orderByColumn);
+                Log::alert($orderBy);
+                $model->orderByRaw("CONVERT($orderByColumn,SIGNED) $orderBy");
             }
+            $model = $model->paginate(6);
+          
+            Log::alert($model);
+            
+
             return $this->successResponse([$keyData => $model]);
         } catch (Exception $e) {
             return $this->errorsHandler($e);
@@ -72,7 +80,6 @@ class BaseRepository implements BaseRepositoryInterface {
     public function update(array $data,$id,string $uploadBasePath = null) : JsonResponse
     {
         try {
-
             $this->model = $this->model::findOrFail($id);
             if(!is_null($uploadBasePath)) {
                 $data = $this->fileUploader($data,$uploadBasePath);
@@ -110,20 +117,35 @@ class BaseRepository implements BaseRepositoryInterface {
     public function find(string $keyData,$id,array $relations = null,bool $onlyCount = false,bool $isOwn = false) : JsonResponse
     {
         try {
-            $model = $this->model::findOrFail($id);
-            // increase views
-            $this->viewsCounter($model);
+            $model = $this->model::query();
+            
+            // load relations model
+            if($relations) {
+                $this->relationsLoader($model,$relations,$onlyCount);
+            }
+            $model = $model->findOrFail($id);
+       
             // if isOwn set true,check if data blongs to user
             if($isOwn) {
                 $this->mustBelongsToUser($model);
             }
-            // load relations model
-            if($relations) {
-               $this->relationsLoader($model,$relations,$onlyCount);
-            }
+        
+            // increase views
+            $this->viewsCounter($model);
 
             return $this->successResponse([$keyData => $model]);
           
+        } catch (Exception $e) {
+            return $this->errorsHandler($e);
+        }
+    }
+
+    public function delete($id) : JsonResponse
+    {
+        try {
+            $model = $this->model::findOrFail($id);
+            $model->delete();
+            return $this->successResponse();
         } catch (Exception $e) {
             return $this->errorsHandler($e);
         }
@@ -244,9 +266,9 @@ class BaseRepository implements BaseRepositoryInterface {
     private function relationsLoader($model,array $relations,bool $onlyCount = false)
     {
         if($onlyCount) {
-            $model->loadCount($relations);
+            $model->withCount($relations);
         } else {
-            $model->load($relations);
+          $model->with($relations);
         }
     }
 

@@ -21,6 +21,7 @@ class BlogController extends Controller
 
     public function index() 
     {
+
         return $this->blogRepository->all('blogs',['comments','likes'],true);
     }
 
@@ -67,6 +68,11 @@ class BlogController extends Controller
     public function likesAndDislikes($id,string $type)
     {
         return $this->blogRepository->likesAndDislikesHandler($id,$type);
+    }
+
+    public function destroy($id)
+    {
+        return $this->blogRepository->delete($id);
     }
 
 

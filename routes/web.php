@@ -20,8 +20,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    $blogs = Blog::withCount('likes')->get();
-    $blogs->sortBy('likes_count',SORT_DESC);
+    return bcrypt('password');
+    DB::enableQueryLog();
 
-   return $blogs;
+    dump(DB::getQueryLog());
+   return 'done';
 });

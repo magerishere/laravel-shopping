@@ -70,8 +70,12 @@ class BaseRepository implements BaseRepositoryInterface {
             if(!is_null($uploadBasePath)) {
                 $data = $this->fileUploader($data,$uploadBasePath);
             }
-            $this->model::create($data);
-            return $this->successResponse();
+            $model = $this->model::create($data);
+            return $this->successResponse([
+
+                'comment' => $model
+            ]);
+            // errors Handler
         } catch (Exception $e) {
             return $this->errorsHandler($e);
         }

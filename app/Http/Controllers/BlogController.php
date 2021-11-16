@@ -70,9 +70,11 @@ class BlogController extends Controller
         return $this->blogRepository->likesAndDislikesHandler($id,$type);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        return $this->blogRepository->delete($id);
+        Log::alert($request->all());
+        $ids = $request->get('blogIds');
+        return $this->blogRepository->delete($ids);
     }
 
 

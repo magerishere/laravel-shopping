@@ -59,7 +59,7 @@ Route::middleware('auth:api')->group(function() {
     Route::get('/blog/user/{id}/edit', [BlogController::class , 'edit']);
     Route::patch('/blog/{id}', [BlogController::class,'update']);
     Route::post('/blog/{id}/{type}',[BlogController::class , 'likesAndDislikes']);
-    Route::delete('blog/{id}', [BlogController::class , 'destroy']);
+    Route::delete('blog', [BlogController::class , 'destroy']);
 });
 
 /*

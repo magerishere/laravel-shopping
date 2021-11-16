@@ -7,7 +7,7 @@ use App\Repositories\BaseRepository;
 
 class BlogRepository extends BaseRepository implements BlogRepositoryInterface {
     protected $model = Blog::class;
-
+    
 
 
 }

@@ -46,14 +46,10 @@ class BaseRepository implements BaseRepositoryInterface {
                 // order by column 
                 $orderByColumn = $request->get('orderByColumn',config('global.orderByColumn'));
                 $orderBy = $request->get('orderBy','desc');
-                Log::alert('this is attention');
-                Log::alert($orderByColumn);
-                Log::alert($orderBy);
                 $model->orderByRaw("CONVERT($orderByColumn,SIGNED) $orderBy");
             }
             $model = $model->paginate(6);
           
-            Log::alert($model);
             
 
             return $this->successResponse([$keyData => $model]);
@@ -61,8 +57,6 @@ class BaseRepository implements BaseRepositoryInterface {
             return $this->errorsHandler($e);
         }
     }
-
-   
 
     public function create(array $data,string $uploadBasePath = null) : JsonResponse
     {
@@ -144,11 +138,14 @@ class BaseRepository implements BaseRepositoryInterface {
         }
     }
 
-    public function delete($id) : JsonResponse
+    public function delete(array $ids) : JsonResponse
     {
         try {
-            $model = $this->model::findOrFail($id);
-            $model->delete();
+            foreach($ids as $id) {
+
+                $model = $this->model::findOrFail($id);
+                $model->delete();
+            }
             return $this->successResponse();
         } catch (Exception $e) {
             return $this->errorsHandler($e);

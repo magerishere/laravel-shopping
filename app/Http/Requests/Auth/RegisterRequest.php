@@ -24,6 +24,7 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
+            'role' => 'required|string', // this type is boolean in database, but in formData is string
             'name' => 'required|string|max:' . config('global.userNameLength'),
             'email' => 'required|string|email|max:' .  config('global.emailLength') . '|unique:users,email',
             'password' => 'required|string|min:8',

@@ -36,18 +36,14 @@ class BaseRepository implements BaseRepositoryInterface {
                     $model->orWhere('catNameKey',$catName);
                 }
             }
-            // order by relation count
-            $orderByRelation = $request->get('orderByRelation',null);
-            if(!is_null($orderByRelation)) {
-                $model->orderByDesc($orderByRelation);
-                
+            // Apply sorts
+            $sort = $request->get('sort',config('global.orderByColumn')); 
+            if($sort === 'desc' || $sort === 'asc') {
+                $model->orderBy(config('global.orderByColumn'),$sort);
             } else {
-
-                // order by column 
-                $orderByColumn = $request->get('orderByColumn',config('global.orderByColumn'));
-                $orderBy = $request->get('orderBy','desc');
-                $model->orderByRaw("CONVERT($orderByColumn,SIGNED) $orderBy");
+                $model->orderByDesc($sort);
             }
+
             $model = $model->paginate(6);
           
             

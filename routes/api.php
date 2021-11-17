@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentReplyController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Repositories\Blog\BlogRepositoryInterface;
 use Illuminate\Http\Request;
@@ -53,6 +54,7 @@ Route::get('/user/blogs', [UserController::class , 'blogs'])->middleware('auth:a
 Route::get('/blogs',[BlogController::class , 'index']);
 Route::post('/blogs',[BlogController::class , 'index']);
 Route::get('/blog/{id}',[BlogController::class , 'show']);
+
 Route::middleware('auth:api')->group(function() {
     Route::get('/blogs/user',[BlogController::class, 'userBlogs']);
     Route::post('/blog', [BlogController::class , 'store']);
@@ -71,6 +73,17 @@ Route::middleware('auth:api')->group(function() {
     Route::post('/comment', [CommentController::class , 'store']);
     Route::post('/comment/{id}/{type}', [CommentController::class ,'likesAndDislikes']);
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| Product Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth:api')->group(function() {
+    Route::post('/product', [ProductController::class , 'store']);
+});
+
 
 /*
 |--------------------------------------------------------------------------

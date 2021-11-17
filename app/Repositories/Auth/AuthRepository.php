@@ -25,7 +25,8 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface {
             return response()->json([
                 'status' => 200,
                 'userId' => $user->id,
-                'token' => $token->accessToken
+                'token' => $token->accessToken,
+                'userRole' => $user->role,
             ]);
             
          } catch(Exception $e) {
@@ -37,7 +38,10 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface {
     public function register(Request $request) : JsonResponse
     {
         try {
+    
             $user = new User();
+            $role = $request->role === 'false' ? 0 : 1;
+            $user->role = $role;
             $user->name = $request->name;
             $user->email = $request->email;
             $user->password = $request->password;

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,6 +21,23 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    $contains = Str::contains('ThisisMyname', 'my');
+    return $contains;
+// echo '<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>'; //insert jquery here
+    
+// $file = file_get_contents('https://ramzarz.news/mining-calculator/');
+
+// echo $file;
+
+// echo "<script>";
+// echo "
+// const wrapper = $('.wpb_wrapper')[1];
+// $('body').html(wrapper);
+// ";//jQuery script here
+// echo "</script>";
+
+
+
     return bcrypt('password');
     DB::enableQueryLog();
 

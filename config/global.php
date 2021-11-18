@@ -7,7 +7,7 @@ return [
     'userNameLength' => 20,
     'emailLength' => 40,
     'titleLength' => 60,
-    'catNameLength' => 60,
+    'catNameLength' => 80,
     'imageLength' => 21,
     'imageSize' => 1024, // 1 Mg
     'contentLength' => 5000, // just use for request validate

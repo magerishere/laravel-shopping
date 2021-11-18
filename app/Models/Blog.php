@@ -11,12 +11,12 @@ class Blog extends Model
     
     protected $fillable = [
         'user_id',
+        'views',
         'catNameKey',
         'catName',
         'title',
         'image',
         'content',
-        'views'
     ];
     
     protected $casts = [
@@ -46,5 +46,10 @@ class Blog extends Model
     public function getImageAttribute($image)
     {
         return 'http://127.0.0.1:8000/storage/images/' . $image;
+    }
+
+    public function getCatNamesAttribute()
+    {
+        return [$this->catNameKey,$this->catName];
     }
 }

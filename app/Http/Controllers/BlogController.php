@@ -34,6 +34,9 @@ class BlogController extends Controller
     public function store(BlogStoreRequest $request)
     {
         $request['user_id'] = Auth::id();
+        $catNames = json_decode($request->get('catNames'));
+        $request['catNameKey'] = $catNames[0];
+        $request['catName'] = $catNames[1];
         $request['views'] = config('global.viewsCount');
         return $this->blogRepository->create($request->all(),config('global.imagesBasePath'));
     }

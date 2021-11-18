@@ -1,11 +1,7 @@
 <?php
 
+use App\Http\Resources\BlogResource;
 use App\Models\Blog;
-use App\Models\Comment;
-use App\Models\LikeDislikes;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -21,8 +17,9 @@ use Illuminate\Support\Str;
 */
 
 Route::get('/', function () {
-    $contains = Str::contains('ThisisMyname', 'my');
-    return $contains;
+    $blog = Blog::find(1);
+    $apiResource = BlogResource::class;
+    return (new $apiResource($blog))->toArray($blog);
 // echo '<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>'; //insert jquery here
     
 // $file = file_get_contents('https://ramzarz.news/mining-calculator/');

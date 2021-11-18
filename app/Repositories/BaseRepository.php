@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 
 class BaseRepository implements BaseRepositoryInterface {
     protected $model;
+    protected $apiResource;
   
     public function all(string $keyData, array $relations = null, bool $onlyCount = false, bool $isOwn = false) : JsonResponse
     {
@@ -45,8 +46,8 @@ class BaseRepository implements BaseRepositoryInterface {
             }
 
             $model = $model->paginate(6);
-          
             
+      
 
             return $this->successResponse([$keyData => $model]);
         } catch (Exception $e) {
@@ -112,7 +113,6 @@ class BaseRepository implements BaseRepositoryInterface {
     {
         try {
             $model = $this->model::query();
-            
             // load relations model
             if($relations) {
                 $this->relationsLoader($model,$relations,$onlyCount);
@@ -127,7 +127,10 @@ class BaseRepository implements BaseRepositoryInterface {
             // increase views
             $this->viewsCounter($model);
 
-            return $this->successResponse([$keyData => $model]);
+
+            return $this->successResponse([
+                $keyData => (new $this->apiResource($model))->toArray($model)
+            ]);
           
         } catch (Exception $e) {
             return $this->errorsHandler($e);

@@ -19,7 +19,7 @@ class CreateProductsTable extends Migration
             $table->string('catNameKey',config('global.catNameLength'))->comment('for query');
             $table->string('catName',config('global.catNameLength'))->comment('for UI');
             $table->string('title',config('global.titleLength'));
-            $table->string('image',config('global.imageLength'));
+            $table->string('image',config('global.imageLength'))->unique();
             $table->integer('amount');
             $table->tinyInteger('qty');
             $table->text('content',config('global.contentLength'));

@@ -16,7 +16,7 @@ class BaseRepository implements BaseRepositoryInterface {
     protected $model;
     protected $apiResource;
   
-    public function all(string $keyData, array $relations = null, bool $onlyCount = false, bool $isOwn = false) : JsonResponse
+    public function all(string $keyData, array $relations = null, bool $onlyCount = false,bool $isOwn = false) : JsonResponse
     {
         try {
             $model = $this->model::query();
@@ -28,6 +28,8 @@ class BaseRepository implements BaseRepositoryInterface {
             if($isOwn) {
                 $isOwnKey = config('global.isOwnKey');
                 $model->where($isOwnKey,Auth::id());
+                Log::alert('isOwn');
+                Log::alert(Auth::id());
             }
 
             // Apply filters
@@ -46,8 +48,8 @@ class BaseRepository implements BaseRepositoryInterface {
             }
 
             $model = $model->paginate(6);
+            Log::alert($model);
             
-      
 
             return $this->successResponse([$keyData => $model]);
         } catch (Exception $e) {
@@ -120,6 +122,7 @@ class BaseRepository implements BaseRepositoryInterface {
             $model = $model->findOrFail($id);
        
             // if isOwn set true,check if data blongs to user
+            $isOwn = request()->header('isOwn',false);
             if($isOwn) {
                 $this->mustBelongsToUser($model);
             }

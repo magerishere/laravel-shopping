@@ -21,7 +21,6 @@ class BlogController extends Controller
 
     public function index() 
     {
-
         return $this->blogRepository->all('blogs',['comments','likes'],true);
     }
 
@@ -59,11 +58,14 @@ class BlogController extends Controller
 
     public function edit($id) 
     {
-        return $this->blogRepository->find('blog',$id,[],false,true);
+        return $this->blogRepository->find('userBlog',$id,[],false,true);
     }
 
     public function update(BlogUpdateRequest $request,$id)
     {
+        $catNames = json_decode($request->get('catNames'));
+        $request['catNameKey'] = $catNames[0];
+        $request['catName'] = $catNames[1];
         return $this->blogRepository
                     ->update($request->all(),$id,config('global.imagesBasePath'));
     }
@@ -75,8 +77,7 @@ class BlogController extends Controller
 
     public function destroy(Request $request)
     {
-        Log::alert($request->all());
-        $ids = $request->get('blogIds');
+        $ids = json_decode($request->get('ids'));
         return $this->blogRepository->delete($ids);
     }
 

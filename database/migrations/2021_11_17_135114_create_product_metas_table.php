@@ -16,7 +16,8 @@ class CreateProductMetasTable extends Migration
         Schema::create('product_metas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->string('phone',config('global.phoneLength'));
+            $table->string('phone',config('global.phoneLength')); // 021-55667788
+            $table->string('city',config('global.cityLength'));
             $table->string('address',config('global.stringDefaultLength'));
             $table->timestamps();
         });

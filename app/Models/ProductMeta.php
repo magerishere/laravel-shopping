@@ -12,6 +12,7 @@ class ProductMeta extends Model
     protected $fillable = [
         'product_id',
         'phone',
-        'address'
+        'city',
+        'address',
     ];
 }

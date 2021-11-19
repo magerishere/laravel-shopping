@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         ->hasAttached(
             Blog::factory()
 
-            ->count(20)
+            ->count(30)
             ->state(function(array $attributes,User $user) {
                 return ['user_id' => $user->id];
             }),

@@ -46,6 +46,19 @@ Route::post('/logout', [AuthController::class , 'logout'])->middleware('auth:api
 */
 Route::get('/user/blogs', [UserController::class , 'blogs'])->middleware('auth:api');
 
+
+/*
+|--------------------------------------------------------------------------
+| Product Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth:api')->group(function() {
+    Route::post('/product', [ProductController::class , 'store']);
+});
+
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Blog Routes
@@ -75,14 +88,6 @@ Route::middleware('auth:api')->group(function() {
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Product Routes
-|--------------------------------------------------------------------------
-*/
-Route::middleware('auth:api')->group(function() {
-    Route::post('/product', [ProductController::class , 'store']);
-});
 
 
 /*

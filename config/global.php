@@ -15,5 +15,7 @@ return [
     'commentReplyLength' => 500,
     'viewsCount' => 0, // default views 
     'orderByColumn' => 'created_at',
-    'phoneLength' => 12, // 021 55667788 
-];
+    'phoneLength' => 12, // 021-55667788 
+    'cityLength' => 40,
+    'incorrectLoginCredentials' => 'ایمیل یا رمزعبور اشتباه است',
+]; 

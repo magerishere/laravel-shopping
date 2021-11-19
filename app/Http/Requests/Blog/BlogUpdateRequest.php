@@ -26,8 +26,7 @@ class BlogUpdateRequest extends FormRequest
     {
 
         return [
-            'catNameKey' => 'required|string|max:' . config('global.catNameLength'),
-            'catName' => 'required|string|max:' . config('global.catNameLength'),
+            'catNames' => 'required|string|max:' . config('global.catNameLength'),
             'title' => 'required|string|max:' . config('global.titleLength'),
             'image' => 'sometimes|required|image|max:' . config('global.imageSize'),
             'content' => 'required|string|max:' . config('global.contentLength'),

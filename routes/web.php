@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 */
 
 Route::get('/', function () {
+    return bcrypt('password');
     $blog = Blog::find(1);
     $apiResource = BlogResource::class;
     return (new $apiResource($blog))->toArray($blog);

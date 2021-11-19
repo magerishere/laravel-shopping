@@ -17,7 +17,7 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface {
           
             $credentials = $request->only('email','password');
             if(!Auth::attempt($credentials)) {
-                return response()->json(['messages' => 'email or password incorrect']);
+                return response()->json(['messages' => config('global.incorrectLoginCredentials')]);
             }
             $user = Auth::user();
             $token = $user->createToken($user->id);

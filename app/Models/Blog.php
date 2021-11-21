@@ -45,7 +45,7 @@ class Blog extends Model
 
     public function getImageAttribute($image)
     {
-        return 'http://127.0.0.1:8000/storage/images/' . $image;
+        return config('globa.imagesFullPath') . $image;
     }
 
     public function getCatNamesAttribute()

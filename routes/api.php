@@ -53,7 +53,9 @@ Route::get('/user/blogs', [UserController::class , 'blogs'])->middleware('auth:a
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:api')->group(function() {
+    Route::get('/products/user',[ProductController::class , 'userProducts']);
     Route::post('/product', [ProductController::class , 'store']);
+    Route::delete('/products',[ProductController::class , 'destroy']);
 });
 
 
@@ -74,7 +76,7 @@ Route::middleware('auth:api')->group(function() {
     Route::get('/blog/user/{id}/edit', [BlogController::class , 'edit']);
     Route::patch('/blog/{id}', [BlogController::class,'update']);
     Route::post('/blog/{id}/{type}',[BlogController::class , 'likesAndDislikes']);
-    Route::delete('blog', [BlogController::class , 'destroy']);
+    Route::delete('blogs', [BlogController::class , 'destroy']);
 });
 
 /*

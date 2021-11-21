@@ -3,6 +3,7 @@
 return [
     'isOwnKey' => 'user_id',
     'imagesBasePath' => public_path('storage\\images\\'),
+    'imagesFullPath' => 'http://127.0.0.1:8000/storage/images/',
     'stringDefaultLength' => 255,
     'userNameLength' => 20,
     'emailLength' => 40,

@@ -20,4 +20,9 @@ class Product extends Model
         'qty',
         'content'
     ];
+
+    public function getImageAttribute($image) 
+    {
+        return config('global.imagesFullPath') . $image;
+    }
 }

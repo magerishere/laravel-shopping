@@ -21,7 +21,7 @@ class CreateProductsTable extends Migration
             $table->string('title',config('global.titleLength'));
             $table->string('image',config('global.imageLength'))->unique();
             $table->integer('amount');
-            $table->tinyInteger('qty');
+            $table->integer('qty');
             $table->text('content',config('global.contentLength'));
             $table->timestamps();
         });

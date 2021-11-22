@@ -30,7 +30,7 @@ class Blog extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class)->orderByDesc('created_at');
+        return $this->morphMany(Comment::class,'commentable');
     }
 
     public function likes()
@@ -45,7 +45,7 @@ class Blog extends Model
 
     public function getImageAttribute($image)
     {
-        return config('globa.imagesFullPath') . $image;
+        return config('global.imagesFullPath') . $image;
     }
 
     public function getCatNamesAttribute()

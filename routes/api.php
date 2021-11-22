@@ -6,7 +6,6 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentReplyController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
-use App\Repositories\Blog\BlogRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Passport\Passport;
@@ -52,9 +51,13 @@ Route::get('/user/blogs', [UserController::class , 'blogs'])->middleware('auth:a
 | Product Routes
 |--------------------------------------------------------------------------
 */
+Route::get('products',[ProductController::class , 'index']);
+Route::get('/product/{id}',[ProductController::class , 'show']);
 Route::middleware('auth:api')->group(function() {
     Route::get('/products/user',[ProductController::class , 'userProducts']);
     Route::post('/product', [ProductController::class , 'store']);
+    Route::get('/product/{id}/edit' , [ProductController::class , 'edit']);
+    Route::patch('/product/{id}', [ProductController::class , 'update']);
     Route::delete('/products',[ProductController::class , 'destroy']);
 });
 
@@ -78,6 +81,7 @@ Route::middleware('auth:api')->group(function() {
     Route::post('/blog/{id}/{type}',[BlogController::class , 'likesAndDislikes']);
     Route::delete('blogs', [BlogController::class , 'destroy']);
 });
+
 
 /*
 |--------------------------------------------------------------------------

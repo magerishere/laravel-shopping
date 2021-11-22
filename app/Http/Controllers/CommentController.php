@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Comment\CommentStoreRequest;
 use App\Repositories\Comment\CommentRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CommentController extends Controller
 {
@@ -17,8 +18,10 @@ class CommentController extends Controller
 
     public function store(CommentStoreRequest $request)
     {
+        Log::alert($request->all());
         $request['user_id'] = Auth::id();
-        $request['blog_id'] = $request->blogId;
+        $request['commentable_type'] = $request->get('commentableType');
+        $request['commentable_id'] = $request->get('commentableId');
         return $this->commentRepository->create($request->all());
     }
 

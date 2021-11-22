@@ -16,7 +16,7 @@ class CreateBlogLikesTable extends Migration
         Schema::create('blog_likes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('blog_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId(config('global.isOwnKey'))->constrained()->onDelete('cascade');
             $table->boolean('type');
             $table->timestamps();
         });

@@ -2,6 +2,8 @@
 
 use App\Http\Resources\BlogResource;
 use App\Models\Blog;
+use App\Models\Product;
+use App\Models\ProductMeta;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -17,28 +19,25 @@ use Illuminate\Support\Str;
 */
 
 Route::get('/', function () {
+    // $product = Product::findOrFail(54);
+    $data = [
+        'catNames' => 'something',
+        'product_id' => 3,
+        'phone' => '021-55667723',
+        'address' => 'تهران، منطقه 17 خیابان شهید برادران حسنی،خیابان ابوذر،میدان مقدم،خیابان شهسوار جنوبی،کوچه طحان،پلاک 36،واحد 8',
+        'city' => 'yes',
+    ];
+    $meta = ProductMeta::class;
+    $meta = $meta::where('product_id',55)->first();
+    $meta->update($data);
+
+    return $meta;
+
+ 
+
+
+
+
     return bcrypt('password');
-    $blog = Blog::find(1);
-    $apiResource = BlogResource::class;
-    return (new $apiResource($blog))->toArray($blog);
-// echo '<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>'; //insert jquery here
-    
-// $file = file_get_contents('https://ramzarz.news/mining-calculator/');
-
-// echo $file;
-
-// echo "<script>";
-// echo "
-// const wrapper = $('.wpb_wrapper')[1];
-// $('body').html(wrapper);
-// ";//jQuery script here
-// echo "</script>";
-
-
-
-    return bcrypt('password');
-    DB::enableQueryLog();
-
-    dump(DB::getQueryLog());
-   return 'done';
+   
 });

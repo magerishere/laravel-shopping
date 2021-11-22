@@ -17,7 +17,7 @@ class CreateCommentReplyLikesTable extends Migration
         Schema::create('comment_reply_likes', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(CommentReply::class)->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId(config('global.isOwnKey'))->constrained()->onDelete('cascade');
             $table->boolean('type');
             $table->timestamps();
         });

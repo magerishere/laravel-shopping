@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Blog\BlogStoreRequest;
 use App\Http\Requests\Blog\BlogUpdateRequest;
-use App\Models\Blog;
 use App\Repositories\Blog\BlogRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +25,8 @@ class BlogController extends Controller
 
     public function userBlogs() 
     {
+        Log::alert('header');
+        Log::alert(request()->header('Authorization'));
         return $this->blogRepository->all('userBlogs',[],false,true);
     }
 

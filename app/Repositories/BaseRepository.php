@@ -14,59 +14,63 @@ use Illuminate\Support\Str;
 
 class BaseRepository implements BaseRepositoryInterface {
     protected $model;
+    protected $foreignKey;
     protected $apiResource;
   
-    public function all(string $keyData, array $relations = null, bool $onlyCount = false,bool $isOwn = false) : JsonResponse
+    public function all(string $keyData, array $relations = [], bool $onlyCount = false,bool $isOwn = false) : JsonResponse
     {
+
         try {
-            $model = $this->model::query();
+            $this->model = $this->model::query();
             // load relations model
-            if($relations) {
-              $this->relationsLoader($model,$relations,$onlyCount);
-            }
+              $this->relationsLoader($this->model,$relations,$onlyCount);
+
             // Get all data that belongs only to the user
             if($isOwn) {
                 $isOwnKey = config('global.isOwnKey');
-                $model->where($isOwnKey,Auth::id());
-                Log::alert('isOwn');
-                Log::alert(Auth::id());
+                $this->model->where($isOwnKey,Auth::id());
             }
 
             // Apply filters
             $request = request();
             if($catNames = $request->get('catNames')) {
                 foreach(json_decode($catNames) as $catName) {
-                    $model->orWhere('catNameKey',$catName);
+                    $this->model->orWhere('catNameKey',$catName);
                 }
             }
             // Apply sorts
             $sort = $request->get('sort',config('global.orderByColumn')); 
             if($sort === 'desc' || $sort === 'asc') {
-                $model->orderBy(config('global.orderByColumn'),$sort);
+                $this->model->orderBy(config('global.orderByColumn'),$sort);
             } else {
-                $model->orderByDesc($sort);
+                $this->model->orderByDesc($sort);
             }
-
-            $model = $model->paginate(6);
-            Log::alert($model);
+            
+            $this->model = $this->model->paginate(6);
             
 
-            return $this->successResponse([$keyData => $model]);
+            return $this->successResponse([$keyData => $this->model]);
         } catch (Exception $e) {
             return $this->errorsHandler($e);
         }
     }
 
-    public function create(array $data,string $uploadBasePath = null) : JsonResponse
+    public function create(array $data,string $uploadBasePath = '',array $metas = []) : JsonResponse
     {
         try {
             if(!is_null($uploadBasePath)) {
+                // note this must be optimized
                 $data = $this->fileUploader($data,$uploadBasePath);
             }
-            $model = $this->model::create($data);
-            return $this->successResponse([
+            $this->model = $this->model::create($data);
 
-                'comment' => $model
+            // create metas for main eloquent in other tables database          
+            foreach($metas as $meta) {
+                $this->model->$meta()->create($data);
+            }
+
+            return $this->successResponse([
+                'comment' => $this->model
             ]);
             // errors Handler
         } catch (Exception $e) {
@@ -74,14 +78,20 @@ class BaseRepository implements BaseRepositoryInterface {
         }
     }
 
-    public function update(array $data,$id,string $uploadBasePath = null) : JsonResponse
+    public function update(array $data,$id,string $uploadBasePath = '',array $metas = []) : JsonResponse
     {
         try {
+            Log::alert($data);
             $this->model = $this->model::findOrFail($id);
             if(!is_null($uploadBasePath)) {
                 $data = $this->fileUploader($data,$uploadBasePath);
             }
             $this->model->update($data);
+            // create metas for main eloquent in other tables database 
+            foreach($metas as $meta) {
+                $meta = $meta::where($this->foreignKey,$id)->firstOrFail();
+                $meta->update($data);
+            }
             return $this->successResponse();
         } catch (Exception $e) {
             return $this->errorsHandler($e);
@@ -114,25 +124,27 @@ class BaseRepository implements BaseRepositoryInterface {
     public function find(string $keyData,$id,array $relations = null,bool $onlyCount = false,bool $isOwn = false) : JsonResponse
     {
         try {
-            $model = $this->model::query();
+            $this->model = $this->model::query();
             // load relations model
             if($relations) {
-                $this->relationsLoader($model,$relations,$onlyCount);
+                $this->relationsLoader($this->model,$relations,$onlyCount);
             }
-            $model = $model->findOrFail($id);
+            $this->model = $this->model->findOrFail($id);
        
             // if isOwn set true,check if data blongs to user
-            $isOwn = request()->header('isOwn',false);
             if($isOwn) {
-                $this->mustBelongsToUser($model);
+                $isOwnKey = config('global.isOwnKey');
+                $this->model->where($isOwnKey,Auth::id());
             }
         
-            // increase views
-            $this->viewsCounter($model);
-
-
+            // increase views if not edit page
+            if(!$isOwn) {
+                $this->viewsCounter($this->model);
+            }
+            
+            Log::alert($this->model);
             return $this->successResponse([
-                $keyData => (new $this->apiResource($model))->toArray($model)
+                $keyData => (new $this->apiResource($this->model))->toArray($this->model)
             ]);
           
         } catch (Exception $e) {
@@ -255,14 +267,6 @@ class BaseRepository implements BaseRepositoryInterface {
             $model->update([
                 'views' => $model->views + 1
             ]);
-        }
-    }
-
-    private function mustBelongsToUser(Model $model)
-    {
-        $isOwnKey = config('global.isOwnKey');
-        if($model->$isOwnKey !== Auth::id()) {
-            throw new UnauthorizedException();
         }
     }
 

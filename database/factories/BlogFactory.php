@@ -15,7 +15,7 @@ class BlogFactory extends Factory
     public function definition()
     {
         return [
-            // user_id
+            // 'user_id' => 1,
             'views' => rand(10,1000),
             'catNameKey' => $this->faker->word(),
             'catName' => $this->faker->word(),

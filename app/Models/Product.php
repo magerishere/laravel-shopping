@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\HasLike;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Product extends Model
 {
 
-    use HasFactory;
+    use HasFactory,HasLike;
 
     protected $fillable = [
         'user_id',
@@ -47,13 +49,5 @@ class Product extends Model
         return $this->morphMany(Comment::class,'commentable');
     }
 
-    public function likes()
-    {
-        return $this->morphMany(Like::class,'likeable')->where('type',1);
-    }
-
-    public function dislikes()
-    {
-        return $this->morphMany(Like::class,'likeable')->where('type',0);
-    }
+   
 }

@@ -17,7 +17,7 @@ class CreateLikesTable extends Migration
             $table->id();
             $table->foreignId(config('global.isOwnKey'))->constrained()->onDelete('cascade');
             $table->morphs('likeable');
-            $table->boolean('type');
+            $table->boolean('type')->comment('1 = like');
             $table->timestamps();
         });
     }

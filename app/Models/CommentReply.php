@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasLike;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CommentReply extends Model
 {
-    use HasFactory;
+    use HasFactory,HasLike;
 
     protected $fillable = [
         'user_id',
@@ -25,15 +26,6 @@ class CommentReply extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function likes()
-    {
-        return $this->hasMany(CommentReplyLikes::class)->where('type',1);
-    }
-
-    public function dislikes()
-    {
-        return $this->hasMany(CommentReplyLikes::class)->where('type',0);
-    }
 
 
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentReplyController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -104,4 +105,16 @@ Route::middleware('auth:api')->group(function() {
 Route::middleware('auth:api')->group(function() {
     Route::post('/comment-reply',[CommentReplyController::class , 'store']);
     Route::post('/comment-reply/{id}/{type}', [CommentReplyController::class , 'likesAndDislikes']);
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Like Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth:api')->group(function() {
+    Route::post('/like/{type}/{id}',[LikeController::class , 'like']);
+    Route::post('/dislike/{type}/{id}',[LikeController::class , 'dislike']);
 });

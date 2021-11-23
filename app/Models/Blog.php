@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasLike;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Blog extends Model
 {
-    use HasFactory;
+    use HasFactory,HasLike;
     
     protected $fillable = [
         'user_id',
@@ -31,16 +32,6 @@ class Blog extends Model
     public function comments()
     {
         return $this->morphMany(Comment::class,'commentable');
-    }
-
-    public function likes()
-    {
-        return $this->hasMany(BlogLikes::class)->where('type',1);
-    }
-
-    public function dislikes()
-    {
-        return $this->hasMany(BlogLikes::class)->where('type',0);
     }
 
     public function getImageAttribute($image)

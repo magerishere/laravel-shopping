@@ -4,7 +4,6 @@ return [
     'isOwnKey' => 'user_id',
     'imagesBasePath' => public_path('storage\\images\\'),
     'imagesFullPath' => 'http://127.0.0.1:8000/storage/images/',
-    'stringDefaultLength' => 255,
     'userNameLength' => 20,
     'emailLength' => 40,
     'titleLength' => 60,
@@ -19,4 +18,7 @@ return [
     'phoneLength' => 12, // 021-55667788 
     'cityLength' => 40,
     'incorrectLoginCredentials' => 'ایمیل یا رمزعبور اشتباه است',
+    // default lengths
+    'stringDefaultLength' => 255,
+    'integerDefaultLength' => 11,
 ]; 

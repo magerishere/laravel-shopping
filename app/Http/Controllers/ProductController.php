@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Product\ProductStoreRequest;
+use App\Http\Requests\Product\ProductUpdateRequest;
 use App\Models\ProductMeta;
 use App\Repositories\Product\ProductRepositoryInterface;
 use Illuminate\Http\Request;
@@ -43,7 +45,7 @@ class ProductController extends Controller
         return $this->productRepository->all('userProducts',[],true,true);
     }
 
-    public function store(Request $request)
+    public function store(ProductStoreRequest $request)
     {
         $request['user_id'] = Auth::id();
         $catNames = json_decode($request->get('catNames'));
@@ -66,7 +68,7 @@ class ProductController extends Controller
         return $this->productRepository->find('userProduct',$id,['meta'],false,true);
     }
 
-    public function update(Request $request,$id)
+    public function update(ProductUpdateRequest $request,$id)
     {
         $request['user_id'] = Auth::id();
         $catNames = json_decode($request->get('catNames'));

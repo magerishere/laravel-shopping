@@ -29,7 +29,9 @@ class AppServiceProvider extends ServiceProvider
 
         Relation::enforceMorphMap([
             'Blog' => 'App\Models\Blog',
-            'Product' => 'App\Models\Product'
+            'Product' => 'App\Models\Product',
+            'Comment' => 'App\Models\Comment',
+            'CommentReply' => 'App\Models\CommentReply'
         ]);
     }
 }

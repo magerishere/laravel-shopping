@@ -6,6 +6,7 @@ use App\Models\Like;
 use App\Models\Product;
 use App\Models\ProductMeta;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -21,23 +22,11 @@ use Illuminate\Support\Str;
 */
 
 Route::get('/', function () {
-    $like = new Like(['user_id'=> 1,'type' => 1]);
-    $like['type'] = 0;
-    return $like;
-    $product = Product::findOrFail(1);
-    // $like = new Like(['type' => 2,'user_id' => 1]);
-    $alias =  $product->getMorphClass();
-    return Relation::getMorphedModel($alias)::find(1);
 
-    $product->likes[0]->type = 0;
-    $product->push();
-    return 'done';
-
- 
-
-
-
-
-    return bcrypt('password');
+    return  null;
    
+});
+
+Route::get('/storageLink', function() {
+    Artisan::call('storage:link');
 });

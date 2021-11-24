@@ -23,6 +23,10 @@ use Illuminate\Support\Str;
 |
 */
 
+Route::get('/test', function() {
+    return 'test';
+});
+
 /*
 |--------------------------------------------------------------------------
 | Passport Routes

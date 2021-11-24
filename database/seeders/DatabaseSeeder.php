@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Blog;
+use App\Models\Comment;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -17,19 +18,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()
-        ->count(10)
-        ->hasAttached(
-            Blog::factory()
-            ->count(30)
-            ->state(function(array $attributes,User $user) {
-                Log::alert($attributes);
-                return ['user_id' => $user->id];
-            }),
-            ['type' => rand(0,1)]) // like or dislike
-            ->create();
+        User::factory()->count(10)->create();
+        // Blog::factory()->hasComments(10)->create();
+        // Comment::factory()->count(5)->for(
+            // Blog::factory(),'commentable'
+        // )->create();
+        // Comment::factory()->count(5)
+        // User::factory()
+        // ->count(10)
+        // ->hasAttached(
+        //     Blog::factory()
+        //     ->count(30)
+        //     ->state(function(array $attributes,User $user) {
+        //         Log::alert($attributes);
+        //         return ['user_id' => $user->id];
+        //     }),
+        //     ['type' => rand(0,1)]) // like or dislike
+        //     ->create();
         
-        Product::factory()->count(50)->create();
+        // Product::factory()->count(50)->create();
         
         // \App\Models\User::factory(10)->create();
     }

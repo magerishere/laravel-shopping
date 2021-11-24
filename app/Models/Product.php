@@ -20,7 +20,8 @@ class Product extends Model
         'image',
         'amount',
         'qty',
-        'content'
+        'content',
+        'views',
     ];
 
     protected $casts = [
